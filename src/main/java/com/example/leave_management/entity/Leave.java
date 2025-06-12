@@ -15,34 +15,33 @@ import java.time.LocalDateTime;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class  leave_requests{
+@Table(name = "leave_request")
+public class Leave {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @ManyToOne
-    @JoinColumn(name = "userId",nullable = false)
+    @JoinColumn(name = "userId", nullable = false)
     private User user;
 
     @Enumerated(EnumType.STRING)
-    private  Status status;
-
-    @NotNull(message = "End date is required")
-    @FutureOrPresent(message = "End date must be today or in the future")
-    @JsonFormat(pattern = "yyyy-MM-dd")
-    private  LocalDate end_date;
+    private Status status;
 
     @NotNull(message = "start date is required")
     @FutureOrPresent(message = "start date must be today or in the future")
     @JsonFormat(pattern = "yyyy-MM-dd")
-    private  LocalDate start_date;
+    private LocalDate startDate;
 
-    @NotBlank(message = "Password is required")
-    private  String reason;
+    @NotNull(message = "end date is required")
+    @FutureOrPresent(message = "end date must be today or in the future")
+    @JsonFormat(pattern = "yyyy-MM-dd")
+    private LocalDate endDate;
+
+    @NotBlank(message = "Reason is required")
+    private String reason;
 
     private LocalDateTime appliedAt;
     private LocalDateTime updatedAt;
-
-
-
 }
+

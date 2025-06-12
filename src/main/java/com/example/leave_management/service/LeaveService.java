@@ -1,13 +1,11 @@
 package com.example.leave_management.service;
 
 import com.example.leave_management.dto.LeaveRequest;
-import com.example.leave_management.entity.Leave;
 import com.example.leave_management.entity.User;
+import com.example.leave_management.entity.Leave;
 import com.example.leave_management.enums.Status;
-import com.example.leave_management.repository.LeaveRepository;
 import com.example.leave_management.repository.LeaveRequestRepository;
 import com.example.leave_management.repository.UserRepository;
-import com.example.leave_management.service.EmailService;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -17,7 +15,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
-public class LeaveService<Leave> {
+public class LeaveService{
 
     @Autowired
     private LeaveRequestRepository leaveRequestRepository;
@@ -28,9 +26,7 @@ public class LeaveService<Leave> {
     @Autowired
     private EmailService emailService;
 
-    /**
-     * Employee applies for leave
-     */
+    //emp apply lev
     public void applyLeave(LeaveRequest request) {
         String email = SecurityContextHolder.getContext().getAuthentication().getName();
         User employee = userRepository.findByEmail(email)
@@ -45,11 +41,18 @@ public class LeaveService<Leave> {
         leave.setAppliedAt(LocalDateTime.now());
 
         leaveRequestRepository.save(leave);
+
+        if (employee.getManager() != null) {
+            emailService.sendApplyLeaveEmail(
+                    employee.getManager().getEmail(),
+                    request,
+                    employee.getUserName()
+            );
+        }
+
     }
 
-    /**
-     * Employee can view their own leave history
-     */
+
     public List<Leave> getMyLeaveHistory() {
         String email = SecurityContextHolder.getContext().getAuthentication().getName();
         User employee = userRepository.findByEmail(email)
@@ -58,23 +61,27 @@ public class LeaveService<Leave> {
         return leaveRequestRepository.findByUser(employee);
     }
 
-    /**
-     * Manager can view team member leave requests
-     */
+
     public List<Leave> getTeamLeaves() {
         String managerEmail = SecurityContextHolder.getContext().getAuthentication().getName();
         User manager = userRepository.findByEmail(managerEmail)
                 .orElseThrow(() -> new RuntimeException("Manager not found"));
 
-        return leaveRepository.findByUserManager(manager);
+        return leaveRequestRepository.findByUserManager(manager);
     }
 
-    /**
-     * Manager approves or rejects leave
-     */
+    public List<Leave> getPendingTeamLeaves() {
+        String managerEmail = SecurityContextHolder.getContext().getAuthentication().getName();
+        User manager = userRepository.findByEmail(managerEmail)
+                .orElseThrow(() -> new RuntimeException("Manager not found"));
+
+        return leaveRequestRepository.findByUserManagerAndStatus(manager,Status.PENDING);
+    }
+
+
     @Transactional
     public void updateLeaveStatus(Long leaveId, Status status) {
-        Leave leave = leaveRepository.findById(leaveId)
+        Leave leave = leaveRequestRepository.findById(leaveId)
                 .orElseThrow(() -> new RuntimeException("Leave not found"));
 
         String managerEmail = SecurityContextHolder.getContext().getAuthentication().getName();
@@ -84,16 +91,16 @@ public class LeaveService<Leave> {
 
         leave.setStatus(status);
         leave.setUpdatedAt(LocalDateTime.now());
-        leaveRepository.save(leave);
+        leaveRequestRepository.save(leave);
 
         // Send email notification
         emailService.sendLeaveStatusEmail(leave.getUser().getEmail(), status.name());
     }
 
-    /**
-     * Admin views all leave requests
-     */
+
     public List<Leave> getAllLeaves() {
-        return leaveRepository.findAll();
+        return leaveRequestRepository.findAll();
     }
+
+
 }

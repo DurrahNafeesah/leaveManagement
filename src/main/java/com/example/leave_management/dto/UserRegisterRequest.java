@@ -1,5 +1,6 @@
 package com.example.leave_management.dto;
 
+import jakarta.validation.constraints.AssertTrue;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import lombok.*;
@@ -10,59 +11,26 @@ import lombok.*;
 
 public class UserRegisterRequest {
 
-    @NotBlank
+    @NotBlank(message = "Username is required")
     private String userName;
 
-    @NotBlank
-    @Email
+    @NotBlank(message = "email is required")
+    @Email(message="invalid email")
     private String email;
 
-    @NotBlank
+    @NotBlank(message = "password is required")
     private String password;
 
     @NotBlank
     private String role;
 
     private Long managerId;
-
-    public void setPassword(String password) {
-        this.password = password;
-    }
-
-    public String getPassword() {
-        return password;
-    }
-
-    public void setUserName(String userName) {
-        this.userName = userName;
-    }
-
-    public String getUserName() {
-        return userName;
-    }
-
-    public void setRole(String role) {
-        this.role = role;
-    }
-
-    public String getRole() {
-        return role;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public Long getManagerId() {
-        return managerId;
-    }
-
-    public void setManagerId(Long managerId) {
-        this.managerId = managerId;
+    @AssertTrue(message = "ManagerId can only be set when role is EMPLOYEE")
+    public boolean isManagerValidForEmployee() {
+        if ("EMPLOYEE".equalsIgnoreCase(role)) {
+            return managerId != null;
+        }
+        return true;
     }
 
 }

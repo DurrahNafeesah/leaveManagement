@@ -1,9 +1,12 @@
 package com.example.leave_management.service;
 
+import com.example.leave_management.dto.LeaveRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.stereotype.Service;
 
+@Service
 public class EmailService {
 
     @Autowired
@@ -13,16 +16,31 @@ public class EmailService {
         SimpleMailMessage message = new SimpleMailMessage();
         message.setTo(to);
         message.setSubject("Welcome to the Leave Management System");
-        message.setText("Your account has been created.\\nTemporary Password: \" + tempPassword + \"\\nPlease change your password after login.");
+        message.setText("Your account has been created.\nTemporary Password: " + tempPassword + "\nPlease change your password after login.");
         mailSender.send(message);
 
 
     }
+
     public void sendLeaveStatusEmail(String to, String status) {
         SimpleMailMessage message = new SimpleMailMessage();
         message.setTo(to);
         message.setSubject("Leave Request Status Update");
         message.setText("Your leave request has been " + status + ".");
+        mailSender.send(message);
+    }
+
+    public void sendApplyLeaveEmail(String to, LeaveRequest request, String employeeName) {
+        SimpleMailMessage message = new SimpleMailMessage();
+        message.setTo(to);
+        message.setSubject("A new Leave Request Submitted");
+        message.setText(
+                "Employee " + employeeName + " has submitted a leave request.\n" +
+                        "Reason: " + request.getReason() + "\n" +
+                        "Start Date: " + request.getStartDate() + "\n" +
+                        "End Date: " + request.getEndDate() + "\n\n" +
+                        "Please review it in the Leave Management System."
+        );
         mailSender.send(message);
     }
 }
