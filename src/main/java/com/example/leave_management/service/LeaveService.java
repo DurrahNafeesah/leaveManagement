@@ -8,6 +8,10 @@ import com.example.leave_management.repository.LeaveRequestRepository;
 import com.example.leave_management.repository.UserRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
@@ -100,6 +104,19 @@ public class LeaveService{
 
     public List<Leave> getAllLeaves() {
         return leaveRequestRepository.findAll();
+    }
+
+    public Page<Leave> getAllLeaves(int page,int size) {
+        Pageable pageable = PageRequest.of(page, size,Sort.by("appliedAt").descending());
+        return leaveRequestRepository.findAll(pageable);
+    }
+    public Page<Leave> getLeavesForManager(int page, int size) {
+        String managerEmail = SecurityContextHolder.getContext().getAuthentication().getName();
+        User manager = userRepository.findByEmail(managerEmail)
+                .orElseThrow(() -> new RuntimeException("Manager not found"));
+
+        Pageable pageable = PageRequest.of(page, size, Sort.by("appliedAt").descending());
+        return leaveRequestRepository.findByUser_Manager(manager, pageable);
     }
 
 

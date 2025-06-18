@@ -3,9 +3,11 @@ package com.example.leave_management.controller;
 import com.example.leave_management.dto.UserRegisterRequest;
 import com.example.leave_management.dto.UserResponseDTO;
 import com.example.leave_management.entity.User;
+import com.example.leave_management.repository.UserRepository;
 import com.example.leave_management.service.UserService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -18,6 +20,8 @@ public class UserController {
 
     @Autowired
     private UserService userService;
+    @Autowired
+    private UserRepository userRepository;
 
     @PostMapping
     public ResponseEntity<String> createUser(@RequestBody @Valid UserRegisterRequest request) {
@@ -47,5 +51,10 @@ public ResponseEntity<List<UserResponseDTO>> getAllUsers() {
     public ResponseEntity<String> deleteUser(@PathVariable Long id) {
         userService.deleteUser(id);
         return ResponseEntity.ok("User deleted successfully");
+    }
+
+    @GetMapping("pagination/{page}/{size}")
+    public ResponseEntity<Page<UserResponseDTO>> getUsers(@PathVariable int page, @PathVariable int size) {
+        return ResponseEntity.ok(userService.getAllUsersDto(page,size));
     }
 }

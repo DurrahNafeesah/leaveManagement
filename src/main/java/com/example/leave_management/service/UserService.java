@@ -6,6 +6,10 @@ import com.example.leave_management.entity.User;
 import com.example.leave_management.enums.Role;
 import com.example.leave_management.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -163,7 +167,11 @@ import java.util.UUID;
         );
     }
 
-
+    public Page<UserResponseDTO> getAllUsersDto(int page,int size) {
+        Pageable pageable = PageRequest.of(page, size, Sort.by("createdAt").descending());
+        Page<User> usersPage = userRepository.findAll(pageable);
+        return usersPage.map(this::convertToDto);
+    }
     private String generateRandomPassword() {
 
             return UUID.randomUUID().toString().substring(0, 8);

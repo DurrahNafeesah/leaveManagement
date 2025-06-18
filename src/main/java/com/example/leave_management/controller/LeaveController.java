@@ -6,6 +6,7 @@ import com.example.leave_management.entity.Leave;
 import com.example.leave_management.service.LeaveService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -47,9 +48,18 @@ public class LeaveController {
         return ResponseEntity.ok("Leave status updated");
     }
 
+    @GetMapping("/manager/leave/team/pagination/{page}/{size}")
+    public ResponseEntity<Page<Leave>> getLeaveForManager(@PathVariable int page, @PathVariable int size) {
+        return ResponseEntity.ok( leaveService.getLeavesForManager(page, size));
+    }
     // ADMIN
     @GetMapping("/admin/leave/all")
     public ResponseEntity<List<Leave>> getAllLeaves() {
         return ResponseEntity.ok(leaveService.getAllLeaves());
+    }
+
+    @GetMapping("/admin/leave/all/pagination/{page}/{size}")
+    public ResponseEntity<Page<Leave>> getAllLeaves(@PathVariable int page, @PathVariable int size) {
+        return ResponseEntity.ok(leaveService.getAllLeaves(page, size));
     }
 }
