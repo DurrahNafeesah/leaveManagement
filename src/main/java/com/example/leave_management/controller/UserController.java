@@ -4,6 +4,7 @@ import com.example.leave_management.dto.UserRegisterRequest;
 import com.example.leave_management.dto.UserResponseDTO;
 import com.example.leave_management.entity.User;
 import com.example.leave_management.service.UserService;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -19,7 +20,7 @@ public class UserController {
     private UserService userService;
 
     @PostMapping
-    public ResponseEntity<String> createUser(@RequestBody UserRegisterRequest request) {
+    public ResponseEntity<String> createUser(@RequestBody @Valid UserRegisterRequest request) {
         userService.createUserByAdmin(request);
         return ResponseEntity.ok("User created successfully");
     }
@@ -37,7 +38,7 @@ public ResponseEntity<List<UserResponseDTO>> getAllUsers() {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<String> updateUser(@PathVariable Long id, @RequestBody UserRegisterRequest request) {
+    public ResponseEntity<String> updateUser(@PathVariable Long id,@Valid  @RequestBody UserRegisterRequest request) {
         userService.updateUser(id, request);
         return ResponseEntity.ok("User updated successfully");
     }

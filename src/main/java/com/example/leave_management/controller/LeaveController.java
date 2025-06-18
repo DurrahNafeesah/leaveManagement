@@ -4,6 +4,7 @@ import com.example.leave_management.dto.LeaveRequest;
 import com.example.leave_management.dto.LeaveStatusUpdate;
 import com.example.leave_management.entity.Leave;
 import com.example.leave_management.service.LeaveService;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -19,7 +20,7 @@ public class LeaveController {
 
     // EMPLOYEE
     @PostMapping("/employee/leave/apply")
-    public ResponseEntity<String> applyLeave(@RequestBody LeaveRequest request) {
+    public ResponseEntity<String> applyLeave(@RequestBody @Valid LeaveRequest request) {
         leaveService.applyLeave(request);
         return ResponseEntity.ok("Leave applied successfully");
     }

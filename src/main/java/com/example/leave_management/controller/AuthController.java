@@ -3,6 +3,7 @@ package com.example.leave_management.controller;
 import com.example.leave_management.dto.*;
 import com.example.leave_management.service.AuthService;
 import com.example.leave_management.service.UserService;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -15,12 +16,12 @@ public class AuthController {
     private AuthService authService;
 
     @PostMapping("/login")
-    public ResponseEntity<String> login(@RequestBody UserLoginRequest request) {
+    public ResponseEntity<String> login(@RequestBody @Valid UserLoginRequest request) {
         return ResponseEntity.ok(authService.login(request));
     }
 
     @PostMapping("/register")
-    public ResponseEntity<String> register(@RequestBody UserRegisterRequest request) {
+    public ResponseEntity<String> register(@RequestBody @Valid UserRegisterRequest request) {
         authService.registerUser(request);
         return ResponseEntity.ok("User registered successfully");
     }

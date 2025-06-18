@@ -1,7 +1,12 @@
 package com.example.leave_management.dto;
+import com.fasterxml.jackson.annotation.JsonFormat;
+import jakarta.validation.constraints.FutureOrPresent;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 
 import java.time.LocalDate;
+
+import jakarta.validation.constraints.NotNull;
 import lombok.*;
 
 @AllArgsConstructor
@@ -9,11 +14,17 @@ import lombok.*;
 @NoArgsConstructor
 
 public class LeaveRequest {
-    @NotBlank
+    @NotNull(message = "start date is required")
+    @FutureOrPresent(message = "start date must be today or in the future")
+    @JsonFormat(pattern = "yyyy-MM-dd")
     private LocalDate startDate;
-    @NotBlank
+
+    @NotNull(message = "end date is required")
+    @FutureOrPresent(message = "end date must be today or in the future")
+    @JsonFormat(pattern = "yyyy-MM-dd")
     private LocalDate endDate;
-    @NotBlank
+
+    @NotBlank(message = "Reason is required")
     private String reason;
 
 

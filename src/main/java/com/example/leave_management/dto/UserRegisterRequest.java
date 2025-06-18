@@ -25,7 +25,7 @@ public class UserRegisterRequest {
     private String role;
 
     private Long managerId;
-    @AssertTrue(message = "ManagerId can only be set when role is EMPLOYEE")
+    @AssertTrue(message = "if the role is EMPLOYEE,ManagerId should be set ")
     public boolean isManagerValidForEmployee() {
         if ("EMPLOYEE".equalsIgnoreCase(role)) {
             return managerId != null;

@@ -16,7 +16,7 @@ public class EmailService {
         SimpleMailMessage message = new SimpleMailMessage();
         message.setTo(to);
         message.setSubject("Welcome to the Leave Management System");
-        message.setText("Your account has been created.\nTemporary Password: " + tempPassword + "\nPlease change your password after login.");
+        message.setText("Your account has been created.\nPassword: " + tempPassword );
         mailSender.send(message);
 
 

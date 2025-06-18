@@ -70,7 +70,7 @@ import java.util.UUID;
 
             newUser.setManager(manager);
         }else {
-            // For MANAGER or other roles, managerId must NOT be set
+            // For MANAGER , managerId must NOT be set
             if (request.getManagerId() != null) {
                 throw new RuntimeException(newUserRole + " should not have a manager assigned");
             }
