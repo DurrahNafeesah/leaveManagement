@@ -45,8 +45,6 @@ public class User {
     @JsonManagedReference
     private List<User> teamMembers;
 
-    @Column(nullable = false)
-    private boolean passwordReset = false;
  
 
 

@@ -11,7 +11,6 @@ import lombok.*;
 
 public class UserRegisterRequest {
 
-    @NotBlank(message = "Username is required")
     private String userName;
 
     @NotBlank(message = "email is required")
