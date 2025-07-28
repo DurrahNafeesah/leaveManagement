@@ -44,7 +44,7 @@ public class UserController {
     @GetMapping("/{id}")
     @Operation(
             summary = "view user by passing user ID ,by admin")
-    public ResponseEntity<Optional<User>> getUserById(@PathVariable Long id) {
+    public ResponseEntity<UserResponseDTO> getUserById(@PathVariable Long id) {
         return ResponseEntity.ok(userService.getUserById(id));
     }
 

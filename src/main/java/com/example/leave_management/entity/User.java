@@ -45,7 +45,11 @@ public class User {
     @JsonManagedReference
     private List<User> teamMembers;
 
- 
+    @OneToMany(mappedBy = "user", cascade = CascadeType.REMOVE, orphanRemoval = true)
+    @JsonManagedReference
+    private List<Leave> leaves;
+
+
 
 
 }

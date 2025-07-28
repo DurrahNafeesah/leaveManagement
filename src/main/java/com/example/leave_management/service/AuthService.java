@@ -4,10 +4,12 @@ package com.example.leave_management.service;
 import com.example.leave_management.dto.UserLoginRequest;
 import com.example.leave_management.dto.UserRegisterRequest;
 import com.example.leave_management.entity.User;
+import com.example.leave_management.enums.CacheName;
 import com.example.leave_management.enums.Role;
 import com.example.leave_management.repository.UserRepository;
 import com.example.leave_management.security.JwtUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -51,7 +53,9 @@ public class AuthService {
         userRepository.save(user);
     }
 
+    @Cacheable("USERS")
     public String login(UserLoginRequest request){
+        System.out.println("from DB");
         Authentication authenticate = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(request.getEmail(), request.getPassword())
         );

@@ -6,6 +6,9 @@ import com.example.leave_management.entity.User;
 import com.example.leave_management.enums.Role;
 import com.example.leave_management.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.CachePut;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -31,6 +34,7 @@ import java.util.UUID;
         @Autowired
         private EmailService emailService;
 
+    @CacheEvict(value = "USERS", allEntries = true)
     public void createUserByAdmin(UserRegisterRequest request) {
         String currentEmail = SecurityContextHolder.getContext().getAuthentication().getName();
         User currentUser = userRepository.findByEmail(currentEmail)
@@ -100,14 +104,17 @@ import java.util.UUID;
 //    }
 
 
-
-    public Optional<User> getUserById(Long id) {
-            return userRepository.findById(id);
+    @Cacheable(value="USER",key="#id")
+    public UserResponseDTO getUserById(Long id) {
+        User user = userRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+        return convertToDto(user);
 
             
     }
-
-    public void updateUser(Long id, UserRegisterRequest request) {
+    @CachePut(value="USER",key="#result.userId")
+    @CacheEvict(value = "USERS", allEntries = true)
+    public UserResponseDTO updateUser(Long id, UserRegisterRequest request) {
         User user = userRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("User not found"));
 
@@ -137,13 +144,16 @@ import java.util.UUID;
             user.setManager(null);
         }
 
-        userRepository.save(user);
+        User updatedUser = userRepository.save(user);
+        return convertToDto(updatedUser);
     }
 
-
+    @CacheEvict(value={"USER","USERS"},allEntries = true)
     public void deleteUser(Long id) {
         userRepository.deleteById(id);
     }
+
+    @Cacheable("USERS")
     public List<UserResponseDTO> getAllUsersDto() {
         List<User> users = userRepository.findAll();
         return users.stream().map(this::convertToDto).toList();
