@@ -57,7 +57,7 @@ public class LeaveService {
         }
     }
 
-    @Cacheable(value = "LEAVE", key = "T(org.springframework.security.core.context.SecurityContextHolder).getContext().getAuthentication().getName()")
+    @Cacheable(value = "LEAVE", key = "#root.authentication.name")
     public List<Leave> getMyLeaveHistory() {
         String email = SecurityContextHolder.getContext().getAuthentication().getName();
         User employee = userRepository.findByEmail(email)
@@ -76,7 +76,7 @@ public class LeaveService {
         return leaveRequestRepository.findByUserManager(manager);
     }
 
-    @Cacheable(value = "LEAVE_DETAILS", key = "'pendingTeamLeaves:' + T(org.springframework.security.core.context.SecurityContextHolder).getContext().getAuthentication().getName()")
+    @Cacheable(value = "LEAVE_DETAILS", key = "'pendingTeamLeaves:' + #root.authentication.name")
     public List<Leave> getPendingTeamLeaves() {
         System.out.println("Fetching pending team leaves - not from cache");
         String managerEmail = SecurityContextHolder.getContext().getAuthentication().getName();

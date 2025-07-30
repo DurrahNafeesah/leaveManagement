@@ -5,7 +5,5 @@ public enum CacheName {
     LEAVE_DETAILS,
     ALL_LEAVES,
     USERS,
-    USER,
-    USER_DTO,
-    DEPARTMENTS
+    USER
 }
