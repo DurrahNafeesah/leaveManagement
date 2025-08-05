@@ -15,4 +15,5 @@ public class SwaggerLogsConstants {
     public static final String GET_USER_SUCCESS="[{\"id\":1,\"name\":\"John Doe\",\"email\":\"john@example.com\"}]";
     public static final String USER_DELETED_SUCCESS="\"User Deleted successfully\"";
     public static final String ALL_USER_PAGINATION_SUCCESS="{ \"content\": [{\"id\":1,\"name\":\"John Doe\",\"email\":\"john@example.com\"}], \"totalPages\": 3, \"totalElements\": 21 }";
+    public static final String LEAVE_BALANCE_SUCCESS="\"Balance :2\"";
 }

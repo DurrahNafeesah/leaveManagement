@@ -49,7 +49,8 @@ public class User {
     @JsonManagedReference
     private List<Leave> leaves;
 
-
+    @Column(name = "leave_balance")
+    private Integer leaveBalance = 0;
 
 
 }
